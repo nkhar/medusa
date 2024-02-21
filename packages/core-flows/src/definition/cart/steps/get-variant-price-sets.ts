@@ -5,10 +5,7 @@ import { StepResponse, createStep } from "@medusajs/workflows-sdk"
 
 interface StepInput {
   variantIds: string[]
-  context: {
-    region_id?: string
-    currency_code?: string
-  }
+  context: Record<string, string | number>
 }
 
 export const getVariantPriceSetsStepId = "get-variant-price-sets"
@@ -61,7 +58,8 @@ export const getVariantPriceSetsStep = createStep(
 
     const calculatedPriceSets = await pricingModuleService.calculatePrices(
       { id: priceSetIds },
-      { context: data.context }
+      // @ts-ignore
+      { context: data.context ?? {} }
     )
 
     const idToPriceSet = new Map<string, Record<string, any>>(

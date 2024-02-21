@@ -1,4 +1,4 @@
-import { CartDTO } from "./common"
+import { CartDTO, CartLineItemDTO } from "./common"
 
 export interface CreateCartCreateLineItemDTO {
   quantity: number
@@ -30,6 +30,15 @@ export interface CreateCartCreateLineItemDTO {
   unit_price?: number | string
 
   metadata?: Record<string, unknown>
+}
+
+export interface UpdateLineItemWorkflowInputDTO {
+  update: {
+    quantity: number
+    metadata?: Record<string, unknown>
+  }
+  item: CartLineItemDTO
+  cart: CartDTO
 }
 
 export interface CreateCartAddressDTO {
