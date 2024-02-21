@@ -1,3 +1,4 @@
+import { WithRequiredProperty } from "../common"
 import { CartDTO, CartLineItemDTO } from "./common"
 
 export interface CreateCartCreateLineItemDTO {
@@ -37,7 +38,7 @@ export interface UpdateLineItemWorkflowInputDTO {
     quantity: number
     metadata?: Record<string, unknown>
   }
-  item: CartLineItemDTO
+  item: WithRequiredProperty<CartLineItemDTO, "variant_id">
   cart: CartDTO
 }
 
