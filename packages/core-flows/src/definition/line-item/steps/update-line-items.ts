@@ -45,6 +45,8 @@ export const updateLineItemsStep = createStep(
           quantity: i.quantity,
           metadata: i.metadata,
           unit_price: i.unit_price,
+          tax_lines: i.tax_lines,
+          adjustments: i.adjustments,
         })
       )
     )

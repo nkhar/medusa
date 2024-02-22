@@ -27,7 +27,10 @@ export const updateLineItemInCartWorkflow = createWorkflow(
 
     const [item] = listLineItemsStep({
       filters: input.selector,
-      config: { select: ["id", "variant_id"] },
+      config: {
+        select: ["id", "variant_id"],
+        relations: ["tax_lines", "adjustments"],
+      },
     })
 
     const priceSets = getVariantPriceSetsStep({
