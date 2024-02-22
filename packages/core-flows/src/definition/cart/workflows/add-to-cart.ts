@@ -15,6 +15,12 @@ import {
 } from "../steps"
 import { prepareLineItemData } from "../utils/prepare-line-item-data"
 
+// TODO: The AddToCartWorkflow are missing the following steps:
+// - Confirm inventory exists (inventory module)
+// - Refresh/delete shipping methods (fulfillment module)
+// - Create line item adjustments (promotion module)
+// - Update payment sessions (payment module)
+
 export const addToCartWorkflowId = "add-to-cart"
 export const addToCartWorkflow = createWorkflow(
   addToCartWorkflowId,
@@ -25,11 +31,12 @@ export const addToCartWorkflow = createWorkflow(
 
     validateVariantsExistStep({ variantIds })
 
-    // TODO: Needs to be more flexible
+    // TODO: This is on par with the context used in v1.*, but we can be more flexible.
     const pricingContext = transform({ cart: input.cart }, (data) => {
       return {
         currency_code: data.cart.currency_code,
         region_id: data.cart.region_id,
+        customer_id: data.cart.customer_id,
       }
     })
 
@@ -40,25 +47,7 @@ export const addToCartWorkflow = createWorkflow(
     })
 
     const variants = getVariantsStep({
-      // @ts-ignore
-      filter: { id: variantIds },
-      config: {
-        select: [
-          "id",
-          "title",
-          "sku",
-          "barcode",
-          "product.id",
-          "product.title",
-          "product.description",
-          "product.subtitle",
-          "product.thumbnail",
-          "product.type",
-          "product.collection",
-          "product.handle",
-        ],
-        relations: ["product"],
-      },
+      filter: variantIds,
     })
 
     const lineItems = transform(
