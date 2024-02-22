@@ -1,5 +1,5 @@
-import { WithRequiredProperty } from "../common"
-import { CartDTO, CartLineItemDTO } from "./common"
+import { CartDTO, FilterableLineItemProps } from "./common"
+import { UpdateLineItemDTO } from "./mutations"
 
 export interface CreateCartCreateLineItemDTO {
   quantity: number
@@ -33,12 +33,9 @@ export interface CreateCartCreateLineItemDTO {
   metadata?: Record<string, unknown>
 }
 
-export interface UpdateLineItemWorkflowInputDTO {
-  update: {
-    quantity: number
-    metadata?: Record<string, unknown>
-  }
-  item: WithRequiredProperty<CartLineItemDTO, "variant_id">
+export interface UpdateLineItemInCartWorkflowInputDTO {
+  selector: FilterableLineItemProps
+  data: Partial<UpdateLineItemDTO>
   cart: CartDTO
 }
 

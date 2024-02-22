@@ -1,11 +1,15 @@
 import { ModuleRegistrationName } from "@medusajs/modules-sdk"
-import { IPricingModuleService, PricingContext } from "@medusajs/types"
+import { IPricingModuleService } from "@medusajs/types"
 import { MedusaError } from "@medusajs/utils"
 import { StepResponse, createStep } from "@medusajs/workflows-sdk"
 
 interface StepInput {
   variantIds: string[]
-  context?: PricingContext
+  context: {
+    currency_code: string
+    region_id?: string
+    customer_id?: string
+  }
 }
 
 export const getVariantPriceSetsStepId = "get-variant-price-sets"
@@ -58,7 +62,7 @@ export const getVariantPriceSetsStep = createStep(
 
     const calculatedPriceSets = await pricingModuleService.calculatePrices(
       { id: priceSetIds },
-      { context: data.context as Record<string, string | number> }
+      { context: data.context }
     )
 
     const idToPriceSet = new Map<string, Record<string, any>>(

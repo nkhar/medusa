@@ -19,12 +19,16 @@ export const POST = async (req: MedusaRequest, res: MedusaResponse) => {
     relations: ["region", "items"],
   })
 
-  const workflowInput = {
-    items: [req.validatedBody as StorePostCartsCartLineItemsItemReq],
+  const input = {
+    cart,
+    selector: {
+      id: req.params.line_item,
+    },
+    update: req.validatedBody as StorePostCartsCartLineItemsItemReq,
   }
 
   const { errors } = await addToCartWorkflow(req.scope).run({
-    input: workflowInput,
+    input,
     throwOnError: false,
   })
 
@@ -47,7 +51,7 @@ export const POST = async (req: MedusaRequest, res: MedusaResponse) => {
 }
 
 export const DELETE = async (req: MedusaRequest, res: MedusaResponse) => {
-  const id = req.params.id
+  const id = req.params.line_id
 
   const { errors } = await deleteLineItemsWorkflow(req.scope).run({
     input: { ids: [id] },
