@@ -1,5 +1,5 @@
 import {
-  addToCartWorkflow,
+  UpdateLineItemInCartWorkflow,
   deleteLineItemsWorkflow,
 } from "@medusajs/core-flows"
 import { ModuleRegistrationName } from "@medusajs/modules-sdk"
@@ -27,7 +27,7 @@ export const POST = async (req: MedusaRequest, res: MedusaResponse) => {
     update: req.validatedBody as StorePostCartsCartLineItemsItemReq,
   }
 
-  const { errors } = await addToCartWorkflow(req.scope).run({
+  const { errors } = await UpdateLineItemInCartWorkflow(req.scope).run({
     input,
     throwOnError: false,
   })
