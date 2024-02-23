@@ -9,6 +9,7 @@ export const POST = async (req: MedusaRequest, res: MedusaResponse) => {
     input: {
       selector: { id: req.params.id },
       revoke: {
+        ...(req.validatedBody as Omit<RevokeApiKeyDTO, "id" | "revoked_by">),
         revoked_by: req.auth_user?.id,
       } as RevokeApiKeyDTO,
     },
