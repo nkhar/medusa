@@ -450,7 +450,6 @@ export default class CartModuleService<
         : [itemIdsOrSelector]
     }
 
-    // TODO: Figure out why this hangs
     await this.lineItemService_.softDelete(toDelete, sharedContext)
   }
 

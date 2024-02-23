@@ -591,7 +591,7 @@ describe("Carts workflows", () => {
   })
 
   describe("deleteLineItems", () => {
-    it.only("should delete items in cart", async () => {
+    it("should delete items in cart", async () => {
       const cart = await cartModuleService.create({
         currency_code: "usd",
         items: [
@@ -620,7 +620,7 @@ describe("Carts workflows", () => {
     })
 
     describe("compensation", () => {
-      it.only("should restore line item if delete fails", async () => {
+      it("should restore line item if delete fails", async () => {
         const workflow = deleteLineItemsWorkflow(appContainer)
 
         workflow.appendAction("throw", deleteLineItemsStepId, {

@@ -807,6 +807,15 @@
           "nullable": false,
           "mappedType": "decimal"
         },
+        "raw_amount": {
+          "name": "raw_amount",
+          "type": "jsonb",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "json"
+        },
         "provider_id": {
           "name": "provider_id",
           "type": "text",
@@ -1309,6 +1318,15 @@
           "primary": false,
           "nullable": false,
           "mappedType": "decimal"
+        },
+        "raw_amount": {
+          "name": "raw_amount",
+          "type": "jsonb",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "json"
         },
         "provider_id": {
           "name": "provider_id",
