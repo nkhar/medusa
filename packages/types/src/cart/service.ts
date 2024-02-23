@@ -140,13 +140,6 @@ export interface ICartModuleService extends IModuleService {
     sharedContext?: Context
   ): Promise<CartLineItemDTO>
 
-  removeLineItems(itemIds: string[], sharedContext?: Context): Promise<void>
-  removeLineItems(itemIds: string, sharedContext?: Context): Promise<void>
-  removeLineItems(
-    selector: Partial<CartLineItemDTO>,
-    sharedContext?: Context
-  ): Promise<void>
-
   listShippingMethods(
     filters: FilterableShippingMethodProps,
     config: FindConfig<CartShippingMethodDTO>,
@@ -164,19 +157,6 @@ export interface ICartModuleService extends IModuleService {
     methods: CreateShippingMethodForSingleCartDTO[],
     sharedContext?: Context
   ): Promise<CartShippingMethodDTO[]>
-
-  removeShippingMethods(
-    methodIds: string[],
-    sharedContext?: Context
-  ): Promise<void>
-  removeShippingMethods(
-    methodIds: string,
-    sharedContext?: Context
-  ): Promise<void>
-  removeShippingMethods(
-    selector: Partial<CartShippingMethodDTO>,
-    sharedContext?: Context
-  ): Promise<void>
 
   listLineItemAdjustments(
     filters: FilterableLineItemAdjustmentProps,
@@ -200,19 +180,6 @@ export interface ICartModuleService extends IModuleService {
     data: UpsertLineItemAdjustmentDTO[],
     sharedContext?: Context
   ): Promise<LineItemAdjustmentDTO[]>
-
-  removeLineItemAdjustments(
-    adjustmentIds: string[],
-    sharedContext?: Context
-  ): Promise<void>
-  removeLineItemAdjustments(
-    adjustmentIds: string,
-    sharedContext?: Context
-  ): Promise<void>
-  removeLineItemAdjustments(
-    selector: Partial<LineItemAdjustmentDTO>,
-    sharedContext?: Context
-  ): Promise<void>
 
   listShippingMethodAdjustments(
     filters: FilterableShippingMethodAdjustmentProps,
@@ -241,19 +208,6 @@ export interface ICartModuleService extends IModuleService {
     sharedContext?: Context
   ): Promise<ShippingMethodAdjustmentDTO[]>
 
-  removeShippingMethodAdjustments(
-    adjustmentIds: string[],
-    sharedContext?: Context
-  ): Promise<void>
-  removeShippingMethodAdjustments(
-    adjustmentId: string,
-    sharedContext?: Context
-  ): Promise<void>
-  removeShippingMethodAdjustments(
-    selector: Partial<ShippingMethodAdjustmentDTO>,
-    sharedContext?: Context
-  ): Promise<void>
-
   listLineItemTaxLines(
     filters: FilterableLineItemTaxLineProps,
     config?: FindConfig<LineItemTaxLineDTO>,
@@ -277,19 +231,6 @@ export interface ICartModuleService extends IModuleService {
     taxLines: (CreateLineItemTaxLineDTO | UpdateLineItemTaxLineDTO)[],
     sharedContext?: Context
   ): Promise<LineItemTaxLineDTO[]>
-
-  removeLineItemTaxLines(
-    taxLineIds: string[],
-    sharedContext?: Context
-  ): Promise<void>
-  removeLineItemTaxLines(
-    taxLineIds: string,
-    sharedContext?: Context
-  ): Promise<void>
-  removeLineItemTaxLines(
-    selector: FilterableLineItemTaxLineProps,
-    sharedContext?: Context
-  ): Promise<void>
 
   listShippingMethodTaxLines(
     filters: FilterableShippingMethodTaxLineProps,
@@ -317,19 +258,6 @@ export interface ICartModuleService extends IModuleService {
     )[],
     sharedContext?: Context
   ): Promise<ShippingMethodTaxLineDTO[]>
-
-  removeShippingMethodTaxLines(
-    taxLineIds: string[],
-    sharedContext?: Context
-  ): Promise<void>
-  removeShippingMethodTaxLines(
-    taxLineIds: string,
-    sharedContext?: Context
-  ): Promise<void>
-  removeShippingMethodTaxLines(
-    selector: FilterableShippingMethodTaxLineProps,
-    sharedContext?: Context
-  ): Promise<void>
 
   softDelete<TReturnableLinkableKeys extends string = string>(
     ids: string[],
