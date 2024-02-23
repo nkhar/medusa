@@ -58,7 +58,6 @@ export const createCartWorkflow = createWorkflow(
 
     const priceSets = getVariantPriceSetsStep({
       variantIds,
-      // @ts-ignore
       context: pricingContext,
     })
 
@@ -85,7 +84,6 @@ export const createCartWorkflow = createWorkflow(
     )
 
     const variants = getVariantsStep({
-      // @ts-ignore
       filter: { id: variantIds },
       config: {
         select: [
@@ -128,9 +126,10 @@ export const createCartWorkflow = createWorkflow(
       }
     })
 
-    // @ts-ignore
-    const cart = createCartsStep([cartToCreate])
+    const carts = createCartsStep([cartToCreate])
 
-    return cart[0]
+    const cart = transform({ carts }, (data) => data.carts?.[0])
+
+    return cart
   }
 )

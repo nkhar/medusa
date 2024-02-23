@@ -6,6 +6,7 @@ import {
 import {
   getSelectsAndRelationsFromObjectArray,
   promiseAll,
+  removeUndefined,
 } from "@medusajs/utils"
 import { StepResponse, createStep } from "@medusajs/workflows-sdk"
 
@@ -40,14 +41,18 @@ export const updateLineItemsStep = createStep(
     )
 
     await promiseAll(
-      itemsBefore.map((i) =>
-        service.updateLineItems(i.id, {
-          quantity: i.quantity,
-          metadata: i.metadata,
-          unit_price: i.unit_price,
-          tax_lines: i.tax_lines,
-          adjustments: i.adjustments,
-        })
+      itemsBefore.map(async (i) =>
+        service.updateLineItems(
+          i.id,
+          removeUndefined({
+            quantity: i.quantity,
+            title: i.title,
+            metadata: i.metadata,
+            unit_price: i.unit_price,
+            tax_lines: i.tax_lines,
+            adjustments: i.adjustments,
+          })
+        )
       )
     )
   }

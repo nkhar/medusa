@@ -658,6 +658,15 @@
           "nullable": false,
           "mappedType": "json"
         },
+        "metadata": {
+          "name": "metadata",
+          "type": "jsonb",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "json"
+        },
         "created_at": {
           "name": "created_at",
           "type": "timestamptz",
@@ -806,6 +815,15 @@
           "primary": false,
           "nullable": true,
           "mappedType": "text"
+        },
+        "metadata": {
+          "name": "metadata",
+          "type": "jsonb",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "json"
         },
         "created_at": {
           "name": "created_at",
@@ -956,6 +974,15 @@
           "primary": false,
           "nullable": true,
           "mappedType": "text"
+        },
+        "metadata": {
+          "name": "metadata",
+          "type": "jsonb",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "json"
         },
         "created_at": {
           "name": "created_at",
@@ -1323,6 +1350,15 @@
           "nullable": false,
           "mappedType": "text"
         },
+        "metadata": {
+          "name": "metadata",
+          "type": "jsonb",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "json"
+        },
         "promotion_id": {
           "name": "promotion_id",
           "type": "text",
@@ -1435,6 +1471,15 @@
           "primary": false,
           "nullable": true,
           "mappedType": "text"
+        },
+        "metadata": {
+          "name": "metadata",
+          "type": "jsonb",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "json"
         },
         "created_at": {
           "name": "created_at",

@@ -145,6 +145,9 @@ export default class LineItem {
   })
   adjustments = new Collection<LineItemAdjustment>(this)
 
+  @Property({ columnType: "jsonb", nullable: true })
+  metadata: Record<string, unknown> | null = null
+
   @Property({
     onCreate: () => new Date(),
     columnType: "timestamptz",
@@ -180,7 +183,9 @@ export default class LineItem {
 
   @BeforeUpdate()
   onUpdate() {
-    const val = new BigNumber(this.raw_unit_price ?? this.unit_price)
+    const val = new BigNumber(
+      (this.unit_price as number) ?? this.raw_unit_price
+    )
 
     this.unit_price = val.numeric
     this.raw_unit_price = val.raw as BigNumberRawValue

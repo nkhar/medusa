@@ -450,7 +450,8 @@ export default class CartModuleService<
         : [itemIdsOrSelector]
     }
 
-    await this.lineItemService_.delete(toDelete, sharedContext)
+    // TODO: Figure out why this hangs
+    await this.lineItemService_.softDelete(toDelete, sharedContext)
   }
 
   async createAddresses(

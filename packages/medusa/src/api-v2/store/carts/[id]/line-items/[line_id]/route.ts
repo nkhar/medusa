@@ -1,10 +1,10 @@
 import {
-  UpdateLineItemInCartWorkflow,
   deleteLineItemsWorkflow,
+  updateLineItemInCartWorkflow,
 } from "@medusajs/core-flows"
 import { ModuleRegistrationName } from "@medusajs/modules-sdk"
 import { ICartModuleService } from "@medusajs/types"
-import { remoteQueryObjectFromString } from "@medusajs/utils"
+import { MedusaError, remoteQueryObjectFromString } from "@medusajs/utils"
 import { MedusaRequest, MedusaResponse } from "../../../../../../types/routing"
 import { defaultStoreCartFields } from "../../../query-config"
 import { StorePostCartsCartLineItemsItemReq } from "./validators"
@@ -16,18 +16,25 @@ export const POST = async (req: MedusaRequest, res: MedusaResponse) => {
 
   const cart = await cartModuleService.retrieve(req.params.id, {
     select: ["id", "region_id", "currency_code"],
-    relations: ["region", "items"],
+    relations: ["region", "items", "items.variant_id"],
   })
+
+  const item = cart.items?.find((i) => i.id === req.params.line_id)
+
+  if (!item) {
+    throw new MedusaError(
+      MedusaError.Types.NOT_FOUND,
+      `Line item with id: ${req.params.line_id} was not found`
+    )
+  }
 
   const input = {
     cart,
-    selector: {
-      id: req.params.line_item,
-    },
+    item,
     update: req.validatedBody as StorePostCartsCartLineItemsItemReq,
   }
 
-  const { errors } = await UpdateLineItemInCartWorkflow(req.scope).run({
+  const { errors } = await updateLineItemInCartWorkflow(req.scope).run({
     input,
     throwOnError: false,
   })

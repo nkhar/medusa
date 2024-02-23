@@ -5,7 +5,7 @@ import {
   transform,
 } from "@medusajs/workflows-sdk"
 import { getVariantPriceSetsStep } from ".."
-import { listLineItemsStep, updateLineItemsStep } from "../../line-item/steps"
+import { updateLineItemsStep } from "../../line-item/steps"
 
 // TODO: The UpdateLineItemsWorkflow are missing the following steps:
 // - Confirm inventory exists (inventory module)
@@ -17,7 +17,9 @@ export const updateLineItemInCartWorkflowId = "update-line-item-in-cart"
 export const updateLineItemInCartWorkflow = createWorkflow(
   updateLineItemInCartWorkflowId,
   (input: WorkflowData<UpdateLineItemInCartWorkflowInputDTO>) => {
-    const pricingContext = transform({ cart: input.cart }, (data) => {
+    const item = transform({ input }, (data) => data.input.item)
+
+    const pricingContext = transform({ cart: input.cart, item }, (data) => {
       return {
         currency_code: data.cart.currency_code,
         region_id: data.cart.region_id,
@@ -25,38 +27,36 @@ export const updateLineItemInCartWorkflow = createWorkflow(
       }
     })
 
-    const [item] = listLineItemsStep({
-      filters: input.selector,
-      config: {
-        select: ["id", "variant_id"],
-        relations: ["tax_lines", "adjustments"],
-      },
-    })
+    const variantIds = transform({ input }, (data) => [
+      data.input.item.variant_id!,
+    ])
 
     const priceSets = getVariantPriceSetsStep({
-      variantIds: [item.variant_id!],
+      variantIds,
       context: pricingContext,
     })
 
-    const lineItemUpdate = transform({ item, priceSets, input }, (data) => {
+    const lineItemUpdate = transform({ input, priceSets, item }, (data) => {
       const price = data.priceSets[data.item.variant_id!].calculated_amount
 
       return {
         data: {
-          ...data.input.data,
+          ...data.input.update,
           unit_price: price,
         },
         selector: {
-          id: item.id,
+          id: data.input.item.id,
         },
       }
     })
 
-    const updatedLineItems = updateLineItemsStep({
+    const result = updateLineItemsStep({
       data: lineItemUpdate.data,
       selector: lineItemUpdate.selector,
     })
 
-    return updatedLineItems
+    const updatedItem = transform({ result }, (data) => data.result?.[0])
+
+    return updatedItem
   }
 )

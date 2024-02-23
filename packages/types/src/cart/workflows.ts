@@ -1,4 +1,4 @@
-import { CartDTO, FilterableLineItemProps } from "./common"
+import { CartDTO, CartLineItemDTO } from "./common"
 import { UpdateLineItemDTO } from "./mutations"
 
 export interface CreateCartCreateLineItemDTO {
@@ -34,9 +34,9 @@ export interface CreateCartCreateLineItemDTO {
 }
 
 export interface UpdateLineItemInCartWorkflowInputDTO {
-  selector: FilterableLineItemProps
-  data: Partial<UpdateLineItemDTO>
   cart: CartDTO
+  item: CartLineItemDTO
+  update: Partial<UpdateLineItemDTO>
 }
 
 export interface CreateCartAddressDTO {

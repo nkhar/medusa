@@ -20,7 +20,7 @@ import TaxLine from "./tax-line"
 export default class LineItemTaxLine extends TaxLine {
   @ManyToOne({
     entity: () => LineItem,
-    cascade: [Cascade.REMOVE, Cascade.PERSIST, "soft-remove"] as any,
+    cascade: [Cascade.REMOVE, Cascade.PERSIST] as any,
   })
   item: LineItem
 
