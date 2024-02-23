@@ -1,9 +1,11 @@
 import { DAL } from "@medusajs/types"
 import {
+  DALUtils,
   createPsqlIndexStatementHelper,
   generateEntityId,
 } from "@medusajs/utils"
 import {
+  Filter,
   BeforeCreate,
   Cascade,
   Collection,
@@ -18,7 +20,10 @@ import {
 import TaxRegion from "./tax-region"
 import TaxRateRule from "./tax-rate-rule"
 
-type OptionalTaxRateProps = DAL.EntityDateColumns
+type OptionalTaxRateProps =
+  | "tax_region"
+  | "rules"
+  | DAL.SoftDeletableEntityDateColumns
 
 const TABLE_NAME = "tax_rate"
 
@@ -35,8 +40,9 @@ const singleDefaultRegionIndexStatement = createPsqlIndexStatementHelper({
 
 @singleDefaultRegionIndexStatement.MikroORMIndex()
 @Entity({ tableName: TABLE_NAME })
+@Filter(DALUtils.mikroOrmSoftDeletableFilterOptions)
 export default class TaxRate {
-  [OptionalProps]: OptionalTaxRateProps
+  [OptionalProps]?: OptionalTaxRateProps
 
   @PrimaryKey({ columnType: "text" })
   id!: string
@@ -56,17 +62,20 @@ export default class TaxRate {
   @Property({ columnType: "bool", default: false })
   is_combinable = false
 
-  @Property({ columnType: "text" })
-  tax_region_id: string
-
   @ManyToOne(() => TaxRegion, {
     fieldName: "tax_region_id",
     index: taxRegionIdIndexName,
-    cascade: [Cascade.REMOVE, Cascade.PERSIST],
+    mapToPk: true,
+    cascade: [Cascade.REMOVE],
   })
+  tax_region_id: string
+
+  @ManyToOne({ entity: () => TaxRegion, persist: false })
   tax_region: TaxRegion
 
-  @OneToMany(() => TaxRateRule, (rule) => rule.tax_rate)
+  @OneToMany(() => TaxRateRule, (rule) => rule.tax_rate, {
+    cascade: ["soft-remove" as Cascade],
+  })
   rules = new Collection<TaxRateRule>(this)
 
   @Property({ columnType: "jsonb", nullable: true })
@@ -89,6 +98,14 @@ export default class TaxRate {
 
   @Property({ columnType: "text", nullable: true })
   created_by: string | null = null
+
+  @createPsqlIndexStatementHelper({
+    tableName: TABLE_NAME,
+    columns: "deleted_at",
+    where: "deleted_at IS NOT NULL",
+  }).MikroORMIndex()
+  @Property({ columnType: "timestamptz", nullable: true })
+  deleted_at: Date | null = null
 
   @BeforeCreate()
   onCreate() {

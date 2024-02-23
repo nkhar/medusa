@@ -316,6 +316,33 @@ moduleIntegrationTestRunner({
         expect(rates).toEqual([])
       })
 
+      it("should soft delete tax rate", async () => {
+        const region = await service.createTaxRegions({
+          country_code: "US",
+        })
+
+        const taxRate = await service.create({
+          tax_region_id: region.id,
+          value: 10,
+          code: "test",
+          name: "test",
+        })
+
+        await service.softDelete([taxRate.id])
+
+        const rates = await service.list(
+          { tax_region_id: region.id },
+          { withDeleted: true }
+        )
+
+        expect(rates).toEqual([
+          expect.objectContaining({
+            id: taxRate.id,
+            deleted_at: expect.any(Date),
+          }),
+        ])
+      })
+
       it("should delete a tax region and its rates", async () => {
         const region = await service.createTaxRegions({
           country_code: "US",
@@ -340,6 +367,47 @@ moduleIntegrationTestRunner({
 
         expect(taxRegions).toEqual([])
         expect(rates).toEqual([])
+      })
+
+      it("should soft delete a tax region and its rates", async () => {
+        const region = await service.createTaxRegions({
+          country_code: "US",
+          default_tax_rate: {
+            value: 2,
+            code: "test",
+            name: "default test",
+          },
+        })
+
+        await service.create({
+          tax_region_id: region.id,
+          value: 10,
+          code: "test",
+          name: "test",
+        })
+
+        await service.softDeleteTaxRegions([region.id])
+
+        const taxRegions = await service.listTaxRegions(
+          {},
+          { withDeleted: true }
+        )
+        const rates = await service.list({}, { withDeleted: true })
+
+        expect(taxRegions).toEqual([
+          expect.objectContaining({
+            id: region.id,
+            deleted_at: expect.any(Date),
+          }),
+        ])
+        expect(rates).toEqual([
+          expect.objectContaining({
+            deleted_at: expect.any(Date),
+          }),
+          expect.objectContaining({
+            deleted_at: expect.any(Date),
+          }),
+        ])
       })
 
       it("should delete a tax rate and its rules", async () => {
@@ -367,6 +435,52 @@ moduleIntegrationTestRunner({
         expect(taxRegions).toEqual([expect.objectContaining({ id: region.id })])
         expect(rates).toEqual([])
         expect(rules).toEqual([])
+      })
+
+      it("should soft delete a tax rate and its rules", async () => {
+        const region = await service.createTaxRegions({
+          country_code: "US",
+        })
+
+        const rate = await service.create({
+          tax_region_id: region.id,
+          value: 10,
+          code: "test",
+          name: "test",
+          rules: [
+            { reference: "product", reference_id: "product_id_1" },
+            { reference: "product_type", reference_id: "product_type_id" },
+          ],
+        })
+
+        await service.softDelete(rate.id)
+
+        const taxRegions = await service.listTaxRegions(
+          {},
+          { withDeleted: true }
+        )
+        const rates = await service.list({}, { withDeleted: true })
+        const rules = await service.listTaxRateRules({}, { withDeleted: true })
+
+        expect(taxRegions).toEqual([
+          expect.objectContaining({ id: region.id, deleted_at: null }),
+        ])
+        expect(rates).toEqual([
+          expect.objectContaining({
+            id: rate.id,
+            deleted_at: expect.any(Date),
+          }),
+        ])
+        expect(rules).toEqual([
+          expect.objectContaining({
+            tax_rate_id: rate.id,
+            deleted_at: expect.any(Date),
+          }),
+          expect.objectContaining({
+            tax_rate_id: rate.id,
+            deleted_at: expect.any(Date),
+          }),
+        ])
       })
 
       it("should fail to create province region belonging to a parent with non-matching country", async () => {
