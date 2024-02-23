@@ -483,6 +483,65 @@ moduleIntegrationTestRunner({
         ])
       })
 
+      it("should soft delete a tax rule", async () => {
+        const region = await service.createTaxRegions({
+          country_code: "US",
+        })
+
+        const rate = await service.create({
+          tax_region_id: region.id,
+          value: 10,
+          code: "test",
+          name: "test",
+        })
+
+        const [ruleOne, ruleTwo] = await service.createTaxRateRules([
+          {
+            tax_rate_id: rate.id,
+            reference: "product",
+            reference_id: "product_id_1",
+          },
+          {
+            tax_rate_id: rate.id,
+            reference: "product_type",
+            reference_id: "product_type_id",
+          },
+        ])
+
+        await service.softDeleteTaxRateRules([ruleOne.id])
+
+        const rules = await service.listTaxRateRules({}, { withDeleted: true })
+        expect(rules).toEqual(
+          expect.arrayContaining([
+            expect.objectContaining({
+              id: ruleOne.id,
+              deleted_at: expect.any(Date),
+            }),
+            expect.objectContaining({
+              id: ruleTwo.id,
+              deleted_at: null,
+            }),
+          ])
+        )
+
+        const rateWithRules = await service.retrieve(rate.id, {
+          relations: ["rules"],
+        })
+        expect(rateWithRules.rules.length).toBe(1)
+
+        // should be possible to add the rule back again
+        await service.createTaxRateRules({
+          tax_rate_id: rate.id,
+          reference: ruleOne.reference,
+          reference_id: ruleOne.reference_id,
+        })
+
+        const rateWithRulesAfterReAdd = await service.retrieve(rate.id, {
+          relations: ["rules"],
+        })
+        expect(rateWithRulesAfterReAdd.rules.length).toBe(2)
+      })
+
       it("should fail to create province region belonging to a parent with non-matching country", async () => {
         const caRegion = await service.createTaxRegions({
           country_code: "CA",

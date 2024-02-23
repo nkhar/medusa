@@ -24,15 +24,21 @@ type OptionalTaxRateProps = DAL.SoftDeletableEntityDateColumns
 
 const TABLE_NAME = "tax_rate"
 
-const taxRegionIdIndexName = "IDX_tax_rate_tax_region_id"
-
 const singleDefaultRegionIndexName = "IDX_single_default_region"
 const singleDefaultRegionIndexStatement = createPsqlIndexStatementHelper({
   name: singleDefaultRegionIndexName,
   tableName: TABLE_NAME,
   columns: "tax_region_id",
   unique: true,
-  where: "is_default = true",
+  where: "is_default = true AND deleted_at IS NULL",
+})
+
+const taxRegionIdIndexName = "IDX_tax_rate_tax_region_id"
+const taxRegionIdIndexStatement = createPsqlIndexStatementHelper({
+  name: taxRegionIdIndexName,
+  tableName: TABLE_NAME,
+  columns: "tax_region_id",
+  where: "deleted_at IS NULL",
 })
 
 @singleDefaultRegionIndexStatement.MikroORMIndex()
@@ -62,10 +68,10 @@ export default class TaxRate {
   @ManyToOne(() => TaxRegion, {
     type: "text",
     fieldName: "tax_region_id",
-    index: taxRegionIdIndexName,
     mapToPk: true,
     cascade: [Cascade.REMOVE],
   })
+  @taxRegionIdIndexStatement.MikroORMIndex()
   tax_region_id: string
 
   @ManyToOne({ entity: () => TaxRegion, persist: false })
