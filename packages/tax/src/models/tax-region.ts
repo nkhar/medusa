@@ -58,7 +58,7 @@ export default class TaxRegion {
   @ManyToOne(() => TaxRegion, {
     index: "IDX_tax_region_parent_id",
     fieldName: "parent_id",
-    onDelete: "set null",
+    cascade: [Cascade.REMOVE],
     mapToPk: true,
     nullable: true,
   })
@@ -71,6 +71,11 @@ export default class TaxRegion {
     cascade: ["soft-remove" as Cascade],
   })
   tax_rates = new Collection<TaxRate>(this)
+
+  @OneToMany(() => TaxRegion, (label) => label.parent, {
+    cascade: ["soft-remove" as Cascade],
+  })
+  children = new Collection<TaxRegion>(this)
 
   @Property({ columnType: "jsonb", nullable: true })
   metadata: Record<string, unknown> | null = null

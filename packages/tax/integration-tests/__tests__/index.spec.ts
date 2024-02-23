@@ -505,6 +505,52 @@ moduleIntegrationTestRunner({
           })
         ).rejects.toThrowError()
       })
+
+      it("should delete all child regions when parent region is deleted", async () => {
+        const region = await service.createTaxRegions({
+          country_code: "CA",
+        })
+        const provinceRegion = await service.createTaxRegions({
+          parent_id: region.id,
+          country_code: "CA",
+          province_code: "QC",
+        })
+
+        await service.deleteTaxRegions(region.id)
+
+        const taxRegions = await service.listTaxRegions({
+          id: provinceRegion.id,
+        })
+
+        expect(taxRegions).toEqual([])
+      })
+
+      it("it should soft delete all child regions when parent region is deleted", async () => {
+        const region = await service.createTaxRegions({
+          country_code: "CA",
+        })
+        const provinceRegion = await service.createTaxRegions({
+          parent_id: region.id,
+          country_code: "CA",
+          province_code: "QC",
+        })
+
+        await service.softDeleteTaxRegions([region.id])
+
+        const taxRegions = await service.listTaxRegions(
+          {
+            id: provinceRegion.id,
+          },
+          { withDeleted: true }
+        )
+
+        expect(taxRegions).toEqual([
+          expect.objectContaining({
+            id: provinceRegion.id,
+            deleted_at: expect.any(Date),
+          }),
+        ])
+      })
     })
   },
 })

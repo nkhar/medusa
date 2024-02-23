@@ -63,6 +63,7 @@ export default class TaxRate {
   is_combinable = false
 
   @ManyToOne(() => TaxRegion, {
+    type: "text",
     fieldName: "tax_region_id",
     index: taxRegionIdIndexName,
     mapToPk: true,
