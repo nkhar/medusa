@@ -20,10 +20,7 @@ import {
 } from "@mikro-orm/core"
 import TaxRate from "./tax-rate"
 
-type OptionalTaxRegionProps =
-  | "parent_id"
-  | "tax_rates"
-  | DAL.SoftDeletableEntityDateColumns
+type OptionalTaxRegionProps = DAL.SoftDeletableEntityDateColumns
 
 const TABLE_NAME = "tax_region"
 
