@@ -542,6 +542,25 @@ moduleIntegrationTestRunner({
         expect(rateWithRulesAfterReAdd.rules.length).toBe(2)
       })
 
+      it("should fail on duplicate rules", async () => {
+        const region = await service.createTaxRegions({
+          country_code: "US",
+        })
+
+        await expect(
+          service.create({
+            tax_region_id: region.id,
+            value: 10,
+            code: "test",
+            name: "test",
+            rules: [
+              { reference: "product", reference_id: "product_id_1" },
+              { reference: "product", reference_id: "product_id_1" },
+            ],
+          })
+        ).rejects.toThrowError()
+      })
+
       it("should fail to create province region belonging to a parent with non-matching country", async () => {
         const caRegion = await service.createTaxRegions({
           country_code: "CA",
