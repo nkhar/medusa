@@ -109,9 +109,12 @@ export default class Cart {
     mapToPk: true,
     nullable: true,
   })
-  shipping_address_id?: string | null
+  shipping_address_id: string | null
 
-  @ManyToOne(() => Address, { persist: false })
+  @ManyToOne(() => Address, {
+    cascade: [Cascade.PERSIST],
+    nullable: true,
+  })
   shipping_address: Address | null
 
   @BillingAddressIdIndex()
@@ -122,9 +125,12 @@ export default class Cart {
     mapToPk: true,
     nullable: true,
   })
-  billing_address_id?: string | null
+  billing_address_id: string | null
 
-  @ManyToOne(() => Address, { persist: false })
+  @ManyToOne(() => Address, {
+    cascade: [Cascade.PERSIST],
+    nullable: true,
+  })
   billing_address: Address | null
 
   @Property({ columnType: "jsonb", nullable: true })

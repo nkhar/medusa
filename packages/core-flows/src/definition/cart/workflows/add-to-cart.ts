@@ -42,7 +42,6 @@ export const addToCartWorkflow = createWorkflow(
 
     const priceSets = getVariantPriceSetsStep({
       variantIds,
-      // @ts-ignore
       context: pricingContext,
     })
 
