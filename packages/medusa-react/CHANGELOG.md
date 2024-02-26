@@ -1,5 +1,14 @@
 # Change Log
 
+## 9.0.16
+
+### Patch Changes
+
+- [#6428](https://github.com/medusajs/medusa/pull/6428) [`44d43e815`](https://github.com/medusajs/medusa/commit/44d43e8155d1b1ca0af5e900787411c7d0b027c0) Thanks [@kasperkristensen](https://github.com/kasperkristensen)! - feat(medusa,medusa-js,medusa-react,icons): Fixes GET /admin/products/:id/variants endpoint in the core, and medusa-js and medusa-react. Pulls latest icons from Figma into `@medusajs/icons`.
+
+- Updated dependencies [[`44d43e815`](https://github.com/medusajs/medusa/commit/44d43e8155d1b1ca0af5e900787411c7d0b027c0)]:
+  - @medusajs/medusa-js@6.1.8
+
 ## 9.0.15
 
 ### Patch Changes
